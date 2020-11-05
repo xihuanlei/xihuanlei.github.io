@@ -8,7 +8,7 @@ WIDGET = {
     "background": 1,
     "dataColor": "B8E986",
     "borderRadius": 5,
-    "key": "49f4a71c7e2e4eba956371650749150f"
+    "key": "20481cf58b144b6783dcf73ae95fb630"
   }
 }
 </script>
