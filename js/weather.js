@@ -12,4 +12,3 @@ WIDGET = {
   }
 }
 </script>
-<script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
