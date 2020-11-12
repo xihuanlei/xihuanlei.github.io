@@ -1,4 +1,4 @@
-<div id="he-plugin-standard"></div>
+//天气插件
 <script>
 WIDGET = {
   CONFIG: {
@@ -6,9 +6,9 @@ WIDGET = {
     "width": "230",
     "height": "270",
     "background": 1,
-    "dataColor": "B8E986",
+    "dataColor": "FFFFFF",
     "borderRadius": 5,
-    "key": "20481cf58b144b6783dcf73ae95fb630"
+    "key": "b495cc2b46ca44a6880028dc12ec4a9d"
   }
 }
 </script>
