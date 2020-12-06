@@ -1,4 +1,5 @@
 //天气插件
+
 <script>
 WIDGET = {
   CONFIG: {
