@@ -1,0 +1,394 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Windows下的redis安装使用及常用命令 | Butterfly</title><meta name="keywords" content="redis命令"><meta name="author" content="Jack Zhang"><meta name="copyright" content="Jack Zhang"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="主 题    redis的安装    redis的使用    redis的常用命令      简 言 REmote DIctionary Server(Redis) 是一个由 Salvatore Sanfilippo 写的 key-value 存储系统，是跨平台的非关系型数据库。   Redis 是一个开源的使用 ANSI C 语言编写、遵守 BSD 协议、支持网络、可基于内存、分布式、可选持久">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Windows下的redis安装使用及常用命令">
+<meta property="og:url" content="https://xihuanlei.github.io/2021/07/20/windows-xia-de-redis-an-zhuang-ji-chang-yong-ming-ling/index.html">
+<meta property="og:site_name" content="Butterfly">
+<meta property="og:description" content="主 题    redis的安装    redis的使用    redis的常用命令      简 言 REmote DIctionary Server(Redis) 是一个由 Salvatore Sanfilippo 写的 key-value 存储系统，是跨平台的非关系型数据库。   Redis 是一个开源的使用 ANSI C 语言编写、遵守 BSD 协议、支持网络、可基于内存、分布式、可选持久">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-07-20T07:13:43.000Z">
+<meta property="article:modified_time" content="2021-07-23T03:24:22.298Z">
+<meta property="article:author" content="Jack Zhang">
+<meta property="article:tag" content="redis命令">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://xihuanlei.github.io/2021/07/20/windows-xia-de-redis-an-zhuang-ji-chang-yong-ming-ling/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '5.2.0',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2021-07-23 11:24:22'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = '2'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/css/background.css"><link rel="stylesheet" href="/css/weather.css"><meta name="generator" content="Hexo 5.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/1.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">61</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">9</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/Daliynotes/"><i class="fa-fw fas fa-feather-alt"></i><span> 日常</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/daliyrecord/"><i class="fa-fw fas fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/tuku/"><i class="fa-fw fas fa-images"></i><span> 图库</span></a></li><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB-%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">主 题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80-%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">简 言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-redis%E5%AE%89%E8%A3%85"><span class="toc-number">1.2.</span> <span class="toc-text">1. redis安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-redis%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.3.</span> <span class="toc-text">2. redis的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-redis%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">1.4.</span> <span class="toc-text">3. redis的常用命令</span></a></li></ol></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Butterfly</a><div style="display:inline"></div><canvas id="particleClockCanvas" style="width:100px;margin-bottom: -10px;margin-right:15px" width="820" height="250"></canvas><script src="/js/canvas-clock.js"></script><style>@media screen and (max-width:768px){#particleClockCanvas{display:none}}</style></span><span id="weather-he-plugin-standard"></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/Daliynotes/"><i class="fa-fw fas fa-feather-alt"></i><span> 日常</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/daliyrecord/"><i class="fa-fw fas fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/tuku/"><i class="fa-fw fas fa-images"></i><span> 图库</span></a></li><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Windows下的redis安装使用及常用命令</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-07-20T07:13:43.000Z" title="发表于 2021-07-20 15:13:43">2021-07-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-07-23T03:24:22.298Z" title="更新于 2021-07-23 11:24:22">2021-07-23</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><a id="more"></a>
+<h1 id="主-题"><a href="#主-题" class="headerlink" title="主 题"></a><strong>主 题</strong></h1><!-- more -->
+
+<ul>
+<li><ol>
+<li>redis的安装</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>redis的使用</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>redis的常用命令<!-- more -->
+
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="简-言"><a href="#简-言" class="headerlink" title="简 言"></a><strong>简 言</strong></h2><!-- more -->
+<p>REmote DIctionary Server(Redis) 是一个由 Salvatore Sanfilippo 写的 key-value 存储系统，是跨平台的非关系型数据库。</p>
+<!-- more -->
+
+<p>Redis 是一个开源的使用 ANSI C 语言编写、遵守 BSD 协议、支持网络、可基于内存、分布式、可选持久性的键值对(Key-Value)存储数据库，并提供多种语言的 API。</p>
+<!-- more -->
+
+<p>Redis 通常被称为数据结构服务器，因为值（value）可以是字符串(String)、哈希(Hash)、列表(list)、集合(sets)和有序集合(sorted sets)等类型。</p>
+<!-- more -->
+<p><em>简言介绍及下方部分内容借鉴来自菜鸟教程，官方指路👉<a target="_blank" rel="noopener" href="https://www.runoob.com/redis/redis-tutorial.html">菜鸟教程–redis</a></em></p>
+<!-- more -->
+
+<h2 id="1-redis安装"><a href="#1-redis安装" class="headerlink" title="1. redis安装"></a><strong>1. redis安装</strong></h2><p>&emsp; 首先找到redis的下载路径，官方指路👉<a target="_blank" rel="noopener" href="https://github.com/microsoftarchive/redis/releases">redis下载</a>，选择相应的版本进行下载，下载完成之后，一直按<strong>next</strong>，在最后默认安装路径是C盘文件夹，这里推荐在D盘建一个文件夹来安装，根据个人意愿选择安装路径。😀<br><img src="https://gitee.com/xihuanlei/grideatest/raw/master/redis/jCPll@V!I7pP.png" alt="https://gitee.com/xihuanlei/grideatest/raw/master/redis/jCPll@V!I7pP.png"></p>
+<p>&emsp;文件结构目录如下图所示👇<br><a target="_blank" rel="noopener" href="https://gitee.com/xihuanlei/grideatest/raw/master/redis/nQ64BIwXFG7K.png"><img src="https://gitee.com/xihuanlei/grideatest/raw/master/redis/nQ64BIwXFG7K.png" alt="https://gitee.com/xihuanlei/grideatest/raw/master/redis/nQ64BIwXFG7K.png"></a></p>
+<!-- more -->
+<ul>
+<li><strong>redis-server.exe：</strong> 服务端程序，提供 redis 服务</li>
+<li><strong>redis-cli.exe:</strong>  客户端程序，通过它连接 redis 服务并进行操作</li>
+<li><strong>redis.windows.conf：</strong> 配置文件，将 redis 作为普通软件使用的配置，命令行关闭则 redis 关闭</li>
+</ul>
+<h2 id="2-redis的使用"><a href="#2-redis的使用" class="headerlink" title="2. redis的使用"></a><strong>2. redis的使用</strong></h2><p>当安装好redis后，启动程序。<br><strong>第一种方法：</strong></p>
+<ul>
+<li><code>Windows+R</code>打开命令提示窗，输入cmd，默认是C盘，需要切换到redis安装目录，我的是<code>D:\redis</code>下</li>
+<li>之后执行<code>redis-server.exe redis.windows.conf</code>命令，演示一下如图👇<br><a target="_blank" rel="noopener" href="https://gitee.com/xihuanlei/grideatest/raw/master/redis/CcYRSEutdQh!.png"><img src="https://gitee.com/xihuanlei/grideatest/raw/master/redis/CcYRSEutdQh!.png" alt="https://gitee.com/xihuanlei/grideatest/raw/master/redis/CcYRSEutdQh!.png"></a></li>
+</ul>
+<p><strong>第二种方法：</strong></p>
+<ul>
+<li>创建一个<code>.txt</code>文档，输入<code>redis-server.exe redis.windows.conf</code>保存 <em>命名可以随便，建议start.txt</em></li>
+<li>把该文本文件后缀名改为<code>.bat</code>并放在redis根目录下</li>
+<li>点击<code>start.bat</code>文件启动<br>出现上图情况，就启动成功了。<!-- more -->
+
+</li>
+</ul>
+<p><strong>注意事项</strong></p>
+<ul>
+<li><p>第一次启动<code>redis-server.exe</code>程序时，报错或者一闪而过，解决方法：启动<code>redis-cli.exe</code>客户端-执行关闭命令<code>shutdown</code>-退出客户端-执行<strong>服务端</strong>执行命令<code>redis-server.exe redis.windows.conf</code>或者<code>start.bat</code>即可</p>
+</li>
+<li><p>在使用redis的过程中，服务端server一定要打开，不能×掉，不然是不能使用客户端的，出现的结果可能就是这样，如图1👇  ，正确操作如图2，可以把服务端窗口隐藏，留服务端使用，切不可关闭服务端。<br><a target="_blank" rel="noopener" href="https://gitee.com/xihuanlei/grideatest/raw/master/redis/WlxAmUsON!p6.png"><img src="https://gitee.com/xihuanlei/grideatest/raw/master/redis/WlxAmUsON!p6.png" alt="https://gitee.com/xihuanlei/grideatest/raw/master/redis/WlxAmUsON!p6.png"></a></p>
+<center>图1</center>
+<div align=center><img src="https://gitee.com/xihuanlei/grideatest/raw/master/redis/dlpReKZo0^e!.png"></div>
+<center>图2</center>
+测试是否成功
+<!-- more -->
+</li>
+<li><p>启动<code>redis-cli.exe</code>客户端</p>
+</li>
+<li><p>输入命令<code>ping</code>，响应结果为：PONG，就是成功了。</p>
+<!-- more -->
+
+</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://gitee.com/xihuanlei/grideatest/raw/master/redis/ABB9Xx9zY1!5.png"><img src="https://gitee.com/xihuanlei/grideatest/raw/master/redis/ABB9Xx9zY1!5.png" alt="https://gitee.com/xihuanlei/grideatest/raw/master/redis/ABB9Xx9zY1!5.png"></a></p>
+<!-- more -->
+
+<h2 id="3-redis的常用命令"><a href="#3-redis的常用命令" class="headerlink" title="3. redis的常用命令"></a>3. redis的常用命令</h2><!-- more -->
+<p>先来了解一下redis的数据类型分：string（字符串），hash（哈希），list（列表），set（集合）及zset(sorted set：有序集合)。<br>配合redis命令来了解redis数据类型，下面开始<br><strong>① String（字符串类型）</strong><br>  string 类型是 Redis 最基本的数据类型，string 类型的值最大能存储 512MB。<br>  举例：</p>
+<!-- more -->
+
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; ping</span><br><span class="line">PONG</span><br><span class="line">127.0.0.1:6379&gt; set username jackzhang</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; get username</span><br><span class="line">&quot;jackzhang&quot;</span><br></pre></td></tr></table></figure>
+<!-- more -->
+
+<p><strong>② Hash（哈希）</strong><br>  Redis hash 是一个键值(key=&gt;value)对集合。Redis hash 是一个 string 类型的 field （字段）和 value（值） 的映射表，hash 特别适合用于存储对象。<br>  样例：<br>  <code>hmset *** field1 &quot;Hello&quot; field2 &quot;World&quot;</code></p>
+<ul>
+<li>***类似于一个对象类</li>
+<li>field是一个字段，类似于对象类的属性</li>
+<li>而”“内的内容，类似于对象类属性对应的值<!-- more -->
+
+</li>
+</ul>
+<p>Hash命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hget key field  #获取存储在哈希表中指定字段的值。</span><br><span class="line">hgetALL key  #获取在哈希表中指定 key 的所有字段和值</span><br><span class="line">hset key field value  #将哈希表 key 中的字段 field 的值设为 value。</span><br></pre></td></tr></table></figure>
+<!-- more -->
+<p> 举例：</p>
+<!-- more -->
+
+<p>创建存储对象</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; hmset message username &quot;jackzhang&quot; age &quot;20&quot;</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+<p>获取存储在哈希表中指定字段的值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; hget message username</span><br><span class="line">&quot;jackzhang&quot;</span><br><span class="line">127.0.0.1:6379&gt; hget message age</span><br><span class="line">&quot;20&quot;</span><br></pre></td></tr></table></figure>
+<p>添加新的字段值并查询</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; hset message sex &quot;man&quot;</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; hget message sex</span><br><span class="line">&quot;man&quot;</span><br></pre></td></tr></table></figure>
+<!-- more -->
+
+<p>实例中我们使用了 Redis HMSET, HGET 命令，HMSET 设置了两个 field=&gt;value 对, HGET 获取对应 field 对应的 value。每个 hash 可以存储 232 -1 键值对（40多亿）。</p>
+<!-- more -->
+
+<p><strong>③ List列表</strong></p>
+<!-- more -->
+<p>Redis 列表是简单的字符串列表，按照插入顺序排序。你可以添加一个元素到列表的头部（左边）或者尾部（右边）。应用场景：关注列表、粉lpush丝列表等，最新消息排行、每篇文章的评论</p>
+<!-- more -->
+
+<p>list列表命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">lpush key value1 [value2]  #将一个或多个值插入到列表头部</span><br><span class="line"></span><br><span class="line">rpush key value1 [value2]  #在列表中添加一个或多个值</span><br><span class="line"></span><br><span class="line">lrange key start stop  #获取列表指定范围内的元素</span><br><span class="line"></span><br><span class="line">lrange key 0 -1  #获取列表所有数据</span><br><span class="line"></span><br><span class="line">lpop key  #移出并获取列表的第一个元素</span><br><span class="line"></span><br><span class="line">rpop key #移除列表的最后一个元素，返回值为移除的元素。</span><br><span class="line"></span><br><span class="line">llen key  #获取列表长度</span><br></pre></td></tr></table></figure>
+
+<p>提示：这里数据列表从0开始查询，最大数据长度为数据列表length-1，查询数据项数字可以≥length-1，如果不清楚可以继续往下看，看完你就懂了 </p>
+<p>举例：</p>
+<!-- more -->
+<p>将一个或多个值插入到列表头部，并查询指定范围</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; lpush user jackzhang</span><br><span class="line">(integer) 1</span><br><span class="line">127.0.0.1:6379&gt; lpush user burceli</span><br><span class="line">(integer) 2</span><br><span class="line">127.0.0.1:6379&gt; lpush user jack</span><br><span class="line">(integer) 3</span><br><span class="line">127.0.0.1:6379&gt; lrange user 0 2</span><br><span class="line">1) &quot;jack&quot;</span><br><span class="line">2) &quot;burceli&quot;</span><br><span class="line">3) &quot;jackzhang&quot;</span><br><span class="line">127.0.0.1:6379&gt; lrange user 0 1</span><br><span class="line">1) &quot;jack&quot;</span><br><span class="line">2) &quot;burceli&quot;</span><br></pre></td></tr></table></figure>
+<p>获取所有数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; lrange user 0 -1</span><br><span class="line">1) &quot;jack&quot;</span><br><span class="line">2) &quot;burceli&quot;</span><br><span class="line">3) &quot;jackzhang&quot;</span><br></pre></td></tr></table></figure>
+<p>移出并获取列表的第一个元素</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; lpop user</span><br><span class="line">&quot;jack&quot;</span><br></pre></td></tr></table></figure>
+<p>移除列表的最后一个元素，返回值为移除的元素。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; rpop user</span><br><span class="line">&quot;jackzhang&quot;</span><br></pre></td></tr></table></figure>
+<p>获取列表长度</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; llen uesr</span><br><span class="line">(integer) 0</span><br></pre></td></tr></table></figure>
+<p>在列表中添加多个值，并查询所有数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; rpush user 9527 007 556</span><br><span class="line">(integer) 4</span><br><span class="line">127.0.0.1:6379&gt; lrange user 0 -1</span><br><span class="line">1) &quot;burceli&quot;</span><br><span class="line">2) &quot;9527&quot;</span><br><span class="line">3) &quot;007&quot;</span><br><span class="line">4) &quot;556&quot;</span><br></pre></td></tr></table></figure>
+<p>特殊情况：如果我要获取一条数据应该怎么办，再者我要是获取的数据范围超出了原有的数据列表会不会报错，往下看👇</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; lrange user 0 0</span><br><span class="line">1) &quot;burceli&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">127.0.0.1:6379&gt; lrange user 0 5</span><br><span class="line">1) &quot;burceli&quot;</span><br><span class="line">2) &quot;9527&quot;</span><br><span class="line">3) &quot;007&quot;</span><br><span class="line">4) &quot;556&quot;</span><br><span class="line">&#96;&#96;&#96;  </span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">**④ Set（集合）**</span><br><span class="line">Redis 的 Set 是 string 类型的无序集合。集合成员是唯一的，这就意味着集合中不能出现重复的数据。</span><br><span class="line">集合是通过哈希表实现的，所以添加，删除，查找的复杂度都是 O(1)。</span><br><span class="line"></span><br><span class="line">set命令</span><br></pre></td></tr></table></figure>
+<p>sadd key member1 [member2]   #向集合添加一个或多个成员<br>smembers key     #返回集合中的所有成员<br>spop key   #移除并返回集合中的一个随机元素<br>srem key member1 [member2]   #移除集合中一个或多个成员</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">举例：</span><br><span class="line"></span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line">向集合添加一个或多个成员</span><br></pre></td></tr></table></figure>
+<p>127.0.0.1:6379&gt; sadd array 1 2 3 4 5<br>(integer) 5<br>127.0.0.1:6379&gt; sadd array 6<br>(integer) 1</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">返回集合中的所有成员</span><br></pre></td></tr></table></figure>
+<p>127.0.0.1:6379&gt; smembers array</p>
+<ol>
+<li>“1”</li>
+<li>“2”</li>
+<li>“3”</li>
+<li>“4”</li>
+<li>“5”</li>
+<li>“6”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">移除并返回集合中的一个随机元素</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; spop array<br>“5”</li>
+<li>0.0.1:6379&gt; spop array<br>“3”</li>
+<li>0.0.1:6379&gt; smembers array</li>
+<li>“1”</li>
+<li>“2”</li>
+<li>“4”</li>
+<li>“6”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">移除集合中一个或多个成员</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; srem array 1 4<br>(integer) 2</li>
+<li>0.0.1:6379&gt; smembers array</li>
+<li>“2”</li>
+<li>“6”</li>
+<li>0.0.1:6379&gt;<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">**⑤ Zset（Sorted Set：有序集合）**</span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">Redis zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。</span><br><span class="line">不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。</span><br><span class="line">zset的成员是唯一的,但分数(score)却可以重复。</span><br><span class="line">&lt;!-- more --&gt;</span><br><span class="line"></span><br><span class="line">“1 小时最热门” 这类榜单如何实现呢？如果记录在数据库中，不太容易对实时统计数据做区分。我们以当前小时的时间戳作为 zset 的 key，把贴子 ID 作为 member ，点击数评论数等作为 score，当 score 发生变化时更新 score。利用 ZREVRANGE 或者 ZRANGE 查到对应数量的记录。</span><br></pre></td></tr></table></figure>
+zadd key score1 member1 [score2 member2]  #向有序集合添加一个或多个成员，或者更新已存在成员的分数<br>zcard key  #获取有序集合的成员数<br>zrem key member [member …]    #移除有序集合中的一个或多个成员<br>zrevrangebyscore key min max   #移除有序集合中给定的字典区间的所有成员<br>zrank key member  #返回有序集合中指定成员的索引<br>zrevrank key member  #返回有序集合中指定成员的排名，有序集成员按分数值递减(从大到小)排序<br>zrange key start stop [withscores]   #通过索引区间返回有序集合指定区间内的成员<br>zrevrangebyscore key max min [withscores]  #返回有序集中指定分数区间内的成员，分数从高到低排序<br>zscore key member  #返回有序集中，成员的分数值<br>zrevrangebyscore key min max [withscores] [limit]  #通过分数返回有序集合指定区间内的成员<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">举例：</span><br><span class="line">添加一个或多个成员，并获取所有成员数</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zadd hot 1 redis<br>(integer) 1</li>
+<li>0.0.1:6379&gt; zadd hot 2 mongodb<br>(integer) 1</li>
+<li>0.0.1:6379&gt; zadd hot 3 mysql<br>(integer) 1</li>
+<li>0.0.1:6379&gt; zrange hot 0 -1</li>
+<li>“redis”</li>
+<li>“mongodb”</li>
+<li>“mysql”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">获取有序集合的成员数</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zcard hot<br>(integer) 3<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">通过索引区间返回有序集合指定区间内的成员</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zrange hot 0 1</li>
+<li>“redis”</li>
+<li>“mongodb”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">移除有序集合中的一个（redis），并获取剩余的有序集合的成员数</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zrem hot redis<br>(integer) 1</li>
+<li>0.0.1:6379&gt; zrange hot 0 1</li>
+<li>“mongodb”</li>
+<li>“mysql”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">向有序集合添加一个成员，通过索引区间返回有序集合指定区间内的成员，获取所有有序集合成员数</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zadd hot 1 es<br>(integer) 1</li>
+<li>0.0.1:6379&gt; zrange hot 0 1</li>
+<li>“es”</li>
+<li>“redis”</li>
+<li>0.0.1:6379&gt; zrange hot 0 -1</li>
+<li>“es”</li>
+<li>“redis”</li>
+<li>“mongodb”</li>
+<li>“mysql”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">返回有序集中，成员的分数值</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zscore hot es<br>“1”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">返回有序集合中指定成员的排名</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zrevrank hot es<br>(integer) 3<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">返回有序集中指定分数区间内的成员，分数从高到低，从低到高排序</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zrevrangebyscore hot 10 1</li>
+<li>“mysql”</li>
+<li>“mongodb”</li>
+<li>“redis”</li>
+<li>“es”</li>
+</ol>
+<p>127.0.0.1:6379&gt; zrangebyscore hot 0 10</p>
+<ol>
+<li>“es”</li>
+<li>“redis”</li>
+<li>“mongodb”</li>
+<li>“mysql”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">通过分数返回有序集合指定区间内的成员</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; zrangebyscore hot 0 10 withscores</li>
+<li>“es”</li>
+<li>“1”</li>
+<li>“redis”</li>
+<li>“1”</li>
+<li>“mongodb”</li>
+<li>“2”</li>
+<li>“mysql”</li>
+<li>“3”<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">**需要了解：**</span><br><span class="line">- key、field之间要有空格、key、value之间要有空格、key、member之间要有空格</span><br><span class="line">- key、field 、value等，在命名时随意（尽量正规命名，见名知意）但命名不可分割开，比如key：&#96;user name&#96;这种在执行命令时会报错或者把它们当两种值</span><br></pre></td></tr></table></figure></li>
+<li>0.0.1:6379&gt; set user name<br>OK</li>
+<li>0.0.1:6379&gt; get user<br>“name”<br>```<br>总结：本次总结，通过学习菜鸟教程、欧电云实习，动手实践完成。</li>
+</ol>
+<p><strong>未完待续，敬请期待</strong></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Jack Zhang</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://xihuanlei.github.io/2021/07/20/windows-xia-de-redis-an-zhuang-ji-chang-yong-ming-ling/">https://xihuanlei.github.io/2021/07/20/windows-xia-de-redis-an-zhuang-ji-chang-yong-ming-ling/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://xihuanlei.github.io" target="_blank">Butterfly</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/redis%E5%91%BD%E4%BB%A4/">redis命令</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/QQ.jpg" target="_blank"><img class="post-qr-code-img" src="/img/QQ.jpg" alt="QQ"/></a><div class="post-qr-code-desc">QQ</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/07/21/ru-he-ba-ben-di-xiang-mu-shang-chuan-dao-gitee-cang-ku/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">如何把本地项目上传到gitee仓库</div></div></a></div><div class="next-post pull-right"><a href="/2021/04/25/ru-he-li-yong-gittee-da-jian-tu-chuang/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">如何利用gitee搭建图床</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Jack Zhang</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text"><a target="_blank" rel="noopener" href="https://github.com/xihuanlei/">This is my Blog<a>.</div><div class="icp"><a><img class="icp-icon" src="/img/icp.png"/><span>来了，喝杯茶在走？</span></a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const initData = {
+      el: '#vcomment',
+      appId: 'mnIIHmzDAgJWUOOSdCn7gWNi-gzGzoHsz',
+      appKey: 'TNTuVyrXQn5t2k2HxC1DnjVM',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script><script src="/js/weather.js"></script><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/gh/metowolf/MetingJS@1.2/dist/Meting.min.js"></script></div></body></html>
