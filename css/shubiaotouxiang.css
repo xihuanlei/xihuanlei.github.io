@@ -1,0 +1,42 @@
+body {
+    cursor:url('https://cdn.jsdelivr.net/gh/xihuanlei/PicGoCDN/img/hexomiku2.png'), auto;
+}
+select, input, textarea, a, button {
+    cursor:url('https://cdn.jsdelivr.net/gh/xihuanlei/PicGoCDN/img/hexomiku2.png'), auto;
+}
+input[disabled], select[disabled], textarea[disabled], input[readonly], select[readonly] {
+    cursor:url('https://cdn.jsdelivr.net/gh/xihuanlei/PicGoCDN/img/hexomiku2.png'), auto;
+}
+.avatar-img {
+     width: 126px;
+     height: 126px;
+     border-radius: 50%;
+    animation: light 4s ease-in-out infinite;
+    transition: 0.5s;
+}
+
+.avatar-img:hover {
+transform: scale(1.15) rotate(720deg);
+}
+
+@keyframes light {
+    0% {
+        box-shadow: 0 0 4px #f00;
+    }
+
+    25% {
+    box-shadow: 0 0 16px #0f0;
+    }
+
+    50% {
+    box-shadow: 0 0 4px #00f;
+    }
+
+    75% {
+    box-shadow: 0 0 16px #0f0;
+    }
+
+    100% {
+    box-shadow: 0 0 4px #f00;
+    }
+}
